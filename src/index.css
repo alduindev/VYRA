@@ -290,6 +290,8 @@ button { cursor: pointer; }
 .insight-panel p { min-height: 60px; margin: 26px 0 19px; color: #72806e; font-size: .78rem; line-height: 1.65; }
 .insight-panel p b { color: #4f6d2b; }
 .calendar-layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 14px; margin-top: 14px; }
+.calendar-range-hint { display: flex; align-items: center; gap: 8px; margin-top: 14px; color: #87958b; font-size: .67rem; }
+.calendar-range-hint svg { color: #759b42; }
 .calendar-header, .day-detail-heading { display: flex; align-items: start; justify-content: space-between; gap: 15px; }
 .calendar-header h2, .day-detail-heading h2 { margin: 6px 0 0; color: #34443a; font-size: 1.05rem; letter-spacing: -.04em; text-transform: capitalize; }
 .calendar-tools { display: flex; gap: 5px; }
@@ -343,6 +345,9 @@ button { cursor: pointer; }
 .calendar-expense b { color: #526057; font-size: .69rem; }
 .calendar-expense small { overflow: hidden; color: #a0aaa3; font-size: .6rem; text-overflow: ellipsis; white-space: nowrap; }
 .calendar-expense > strong { color: #b56d60; font-size: .7rem; }
+.calendar-income > strong { color: #67943c; }
+.calendar-commitment > strong { color: #a87340; }
+.calendar-grid button.in-range { background: #f1f8e3; }
 .day-empty { display: grid; justify-items: center; gap: 7px; padding: 25px 8px; text-align: center; }
 .day-empty .empty-icon { width: 37px; height: 37px; margin: 0; }
 .day-empty b { color: #647268; font-size: .72rem; }
