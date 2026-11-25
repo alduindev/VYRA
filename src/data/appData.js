@@ -1,6 +1,6 @@
 let runtimeData
 const DATA_VERSION = 1
-const SESSION_DATA_KEY = 'vyra-session-v2'
+const SESSION_DATA_KEY = 'vyra-session-v3'
 
 const seed = {
   profile: { id: '', createdAt: '', name: 'Alduin', email: '', income: 4874.65, available: 4874.65, fixed: 0, goal: 0, saved: 0, focus: 'Controlar mis gastos', focuses: ['Controlar mis gastos'], password: '', passwordHash: '', onboardingComplete: false },
@@ -16,6 +16,7 @@ const seed = {
   expenses: [],
   activity: [],
   incomeSources: [],
+  incomeEntries: [],
   recurringPayments: [],
   monthlyClosures: [],
   session: { active: false, lastActivity: 0 }
@@ -80,12 +81,12 @@ const calculateLiveBudget = ({ available, spent, goal = 0, recurringRemaining = 
 const calculateRecurringRemaining = (payments, dayOfMonth) => (payments || []).filter(item => item.active !== false && Number(item.dueDay || 1) >= Number(dayOfMonth)).reduce((sum, item) => sum + Number(item.amount || 0), 0)
 const summarizeMonth = ({ income = 0, spent = 0, saved = 0 }) => ({ income: Number(income || 0), spent: Number(spent || 0), saved: Number(saved || 0), remaining: Number(income || 0) - Number(spent || 0) })
 const appendActivity = (data, event) => ({ ...data, activity: [...(data.activity || []), { id: crypto.randomUUID(), createdAt: new Date().toISOString(), ...event }] })
-const normalizeData = data => ({ ...seed, ...data, version: DATA_VERSION, profile: { ...seed.profile, ...data.profile }, session: { ...seed.session, ...data.session }, categories: Array.isArray(data.categories) && data.categories.length ? data.categories : seed.categories, activity: Array.isArray(data.activity) ? data.activity : [], incomeSources: Array.isArray(data.incomeSources) ? data.incomeSources : [], recurringPayments: Array.isArray(data.recurringPayments) ? data.recurringPayments : [], monthlyClosures: Array.isArray(data.monthlyClosures) ? data.monthlyClosures : [] })
+const normalizeData = data => ({ ...seed, ...data, version: DATA_VERSION, profile: { ...seed.profile, ...data.profile }, session: { ...seed.session, ...data.session }, categories: Array.isArray(data.categories) && data.categories.length ? data.categories : seed.categories, activity: Array.isArray(data.activity) ? data.activity : [], incomeSources: Array.isArray(data.incomeSources) ? data.incomeSources : [], incomeEntries: Array.isArray(data.incomeEntries) ? data.incomeEntries : [], recurringPayments: Array.isArray(data.recurringPayments) ? data.recurringPayments : [], monthlyClosures: Array.isArray(data.monthlyClosures) ? data.monthlyClosures : [] })
 const load = () => { if (!runtimeData) { let saved = null; if (!import.meta.env.DEV && typeof sessionStorage !== 'undefined') { try { saved = JSON.parse(sessionStorage.getItem(SESSION_DATA_KEY) || 'null') } catch { saved = null } } runtimeData = normalizeData(saved || JSON.parse(JSON.stringify(import.meta.env.DEV ? seed : preReleaseSeed))) } return runtimeData }
 const readData = () => load()
 const writeData = next => { runtimeData = normalizeData(next); if (!import.meta.env.DEV && typeof sessionStorage !== 'undefined') sessionStorage.setItem(SESSION_DATA_KEY, JSON.stringify(runtimeData)) }
 function exportJson(data) {
-  const payload = { schema: 'vyra.user.v1', version: DATA_VERSION, exportedAt: new Date().toISOString(), userId: data.profile.id || null, profile: { ...data.profile, password: undefined, passwordHash: undefined }, categories: data.categories, expenses: data.expenses, activity: data.activity || [], incomeSources: data.incomeSources || [], recurringPayments: data.recurringPayments || [], monthlyClosures: data.monthlyClosures || [] }
+  const payload = { schema: 'vyra.user.v1', version: DATA_VERSION, exportedAt: new Date().toISOString(), userId: data.profile.id || null, profile: { ...data.profile, password: undefined, passwordHash: undefined }, categories: data.categories, expenses: data.expenses, activity: data.activity || [], incomeSources: data.incomeSources || [], incomeEntries: data.incomeEntries || [], recurringPayments: data.recurringPayments || [], monthlyClosures: data.monthlyClosures || [] }
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `vyra-respaldo-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(url)
 }
 function normalizeImportedData(raw, current) {
