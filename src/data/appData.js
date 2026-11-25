@@ -23,12 +23,13 @@ const seed = {
 
 const preReleaseSeed = {
   ...seed,
-  profile: { ...seed.profile, id: 'pre-release-demo', createdAt: '2026-11-01T09:00:00.000Z', name: 'Demo', email: 'demo@vyra.local', income: 4700, available: 40, passwordHash: 'a3090f4f8d2e66c2fb85611c9b5c95c2b7afd6399365888626b569d0f03bf191', onboardingComplete: true },
-  expenses: [{ id: 'pre-release-food', categoryId: 'food', type: 'Menú', amount: 12, note: 'Comida del día', paymentMethod: 'Yape', createdAt: '2026-11-25T04:19:47.793Z' }],
-  activity: [{ id: 'pre-release-account', createdAt: '2026-11-01T09:00:00.000Z', type: 'account', title: 'Creaste tu cuenta', detail: 'Cuenta demo de pre-release.' }, { id: 'pre-release-expense', createdAt: '2026-11-25T04:19:47.793Z', type: 'expense', title: 'Registraste un gasto', detail: 'Menú · S/ 12.00 · Yape' }],
-  incomeSources: [{ id: 'pre-release-income', name: 'Ingreso mensual', amount: 4700, frequency: 'monthly', active: true }],
+  profile: { ...seed.profile, id: '', createdAt: '', name: '', email: '', income: 0, available: 0, fixed: 0, goal: 0, saved: 0, focus: '', focuses: [], password: '', passwordHash: '', onboardingComplete: false },
+  expenses: [],
+  activity: [],
+  incomeSources: [],
   recurringPayments: [],
-  monthlyClosures: []
+  monthlyClosures: [],
+  session: { active: false, lastActivity: 0 }
 }
 
 
