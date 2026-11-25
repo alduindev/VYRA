@@ -1,6 +1,6 @@
 let runtimeData
 const DATA_VERSION = 1
-const SESSION_DATA_KEY = 'vyra-session-v1'
+const SESSION_DATA_KEY = 'vyra-session-v2'
 
 const seed = {
   profile: { id: '', createdAt: '', name: 'Alduin', email: '', income: 4874.65, available: 4874.65, fixed: 0, goal: 0, saved: 0, focus: 'Controlar mis gastos', focuses: ['Controlar mis gastos'], password: '', passwordHash: '', onboardingComplete: false },
