@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calculateLiveBudget, calculateRecurringRemaining, normalizeImportedData, passwordChecks, summarizeMonth } from './appData'
+import { calculateIncomeForMonth, calculateIncomeForRange, calculateLiveBudget, calculateRecurringRemaining, normalizeImportedData, passwordChecks, summarizeMonth } from './appData'
 
 describe('financial calculations', () => {
   it('calculates safe daily spending after commitments and savings', () => {
@@ -34,7 +34,28 @@ describe('financial calculations', () => {
     expect(imported.monthlyClosures).toEqual([])
   })
 
-  it('counts only active recurring payments still due this month', () => {
-    expect(calculateRecurringRemaining([{ amount: 900, dueDay: 25, active: true }, { amount: 300, dueDay: 5, active: true }, { amount: 100, dueDay: 28, active: false }], 20)).toBe(900)
+  it('counts active recurring payments until they are paid', () => {
+    expect(calculateRecurringRemaining([{ amount: 900, dueDay: 25, active: true }, { amount: 300, dueDay: 5, active: true }, { amount: 100, dueDay: 28, active: false }], 20)).toBe(1200)
+  })
+
+  it('does not count a recurring payment already marked as paid', () => {
+    expect(calculateRecurringRemaining([{ id: 'internet', amount: 90, dueDay: 28, active: true }], 20, [{ recurringId: 'internet', createdAt: new Date().toISOString() }])).toBe(0)
+  })
+
+  it('counts real income entries only in their selected month', () => {
+    expect(calculateIncomeForMonth([
+      { amount: 2500, receivedDate: '2026-11-01' },
+      { amount: 300, receivedDate: '2026-11-18' },
+      { amount: 900, receivedDate: '2026-10-01' },
+      { amount: 100, receivedDate: '2026-11-20', active: false }
+    ], '2026-11')).toBe(2800)
+  })
+
+  it('limits income analysis to the selected date range', () => {
+    expect(calculateIncomeForRange([
+      { amount: 2500, receivedDate: '2026-11-01' },
+      { amount: 300, receivedDate: '2026-11-18' },
+      { amount: 900, receivedDate: '2026-10-01' }
+    ], '2026-11-10', '2026-11-30')).toBe(300)
   })
 })
