@@ -21,6 +21,16 @@ const seed = {
   session: { active: false, lastActivity: 0 }
 }
 
+const preReleaseSeed = {
+  ...seed,
+  profile: { ...seed.profile, id: 'pre-release-demo', createdAt: '2026-11-01T09:00:00.000Z', name: 'Demo', email: 'demo@vyra.local', income: 4700, available: 40, passwordHash: 'a3090f4f8d2e66c2fb85611c9b5c95c2b7afd6399365888626b569d0f03bf191', onboardingComplete: true },
+  expenses: [{ id: 'pre-release-food', categoryId: 'food', type: 'Menú', amount: 12, note: 'Comida del día', paymentMethod: 'Yape', createdAt: '2026-11-25T04:19:47.793Z' }],
+  activity: [{ id: 'pre-release-account', createdAt: '2026-11-01T09:00:00.000Z', type: 'account', title: 'Creaste tu cuenta', detail: 'Cuenta demo de pre-release.' }, { id: 'pre-release-expense', createdAt: '2026-11-25T04:19:47.793Z', type: 'expense', title: 'Registraste un gasto', detail: 'Menú · S/ 12.00 · Yape' }],
+  incomeSources: [{ id: 'pre-release-income', name: 'Ingreso mensual', amount: 4700, frequency: 'monthly', active: true }],
+  recurringPayments: [],
+  monthlyClosures: []
+}
+
 
 const demoEvents = [
   { id: 'deposit', kind: 'deposit', title: 'Depósito recibido', detail: 'Disponible para ti', delta: 600, amount: '+S/ 600' },
@@ -70,7 +80,7 @@ const calculateRecurringRemaining = (payments, dayOfMonth) => (payments || []).f
 const summarizeMonth = ({ income = 0, spent = 0, saved = 0 }) => ({ income: Number(income || 0), spent: Number(spent || 0), saved: Number(saved || 0), remaining: Number(income || 0) - Number(spent || 0) })
 const appendActivity = (data, event) => ({ ...data, activity: [...(data.activity || []), { id: crypto.randomUUID(), createdAt: new Date().toISOString(), ...event }] })
 const normalizeData = data => ({ ...seed, ...data, version: DATA_VERSION, profile: { ...seed.profile, ...data.profile }, session: { ...seed.session, ...data.session }, categories: Array.isArray(data.categories) && data.categories.length ? data.categories : seed.categories, activity: Array.isArray(data.activity) ? data.activity : [], incomeSources: Array.isArray(data.incomeSources) ? data.incomeSources : [], recurringPayments: Array.isArray(data.recurringPayments) ? data.recurringPayments : [], monthlyClosures: Array.isArray(data.monthlyClosures) ? data.monthlyClosures : [] })
-const load = () => { if (!runtimeData) { let saved = null; if (!import.meta.env.DEV && typeof sessionStorage !== 'undefined') { try { saved = JSON.parse(sessionStorage.getItem(SESSION_DATA_KEY) || 'null') } catch { saved = null } } runtimeData = normalizeData(saved || JSON.parse(JSON.stringify(seed))) } return runtimeData }
+const load = () => { if (!runtimeData) { let saved = null; if (!import.meta.env.DEV && typeof sessionStorage !== 'undefined') { try { saved = JSON.parse(sessionStorage.getItem(SESSION_DATA_KEY) || 'null') } catch { saved = null } } runtimeData = normalizeData(saved || JSON.parse(JSON.stringify(import.meta.env.DEV ? seed : preReleaseSeed))) } return runtimeData }
 const readData = () => load()
 const writeData = next => { runtimeData = normalizeData(next); if (!import.meta.env.DEV && typeof sessionStorage !== 'undefined') sessionStorage.setItem(SESSION_DATA_KEY, JSON.stringify(runtimeData)) }
 function exportJson(data) {
